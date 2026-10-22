@@ -1,0 +1,316 @@
+body, html{
+    margin: 0px;
+    padding: 0px;
+    scroll-behavior: smooth;
+    font-family: 'Montserrat', sans-serif!important;
+}
+
+/* ------ HEADER -----  */
+
+.header{
+    height: 80px;
+    width: 100%;
+    background-color: #F4F4F4;
+    border: none;
+    align-items: center;
+    overflow: hidden;
+}
+
+.content-header{
+    height: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.header .logo{
+  width: 10%;
+}
+.header img{
+    width: 100%;
+}
+
+.header .icon{
+    color: #2B2B2B;
+    text-decoration: none;
+    margin: 0px;
+}
+
+.header .buttons-info{
+    
+    width: 80%; 
+    gap: 15px;
+}
+
+/* ------------------- */
+
+
+/* ----- FOOTER ----- */
+
+.footer{
+    height: max-content;
+    width: 100%;
+    background-color: #414143;
+    color: white;
+    padding: 20px;
+}
+
+.footer p{
+    text-align: center;
+    width: 50%;
+}
+
+/* ------------------- */
+
+/* --- CATEGORIAS --- */
+
+.categorias, .SubMenu-container, .anuncios, .artigo{
+    height: max-content;
+    border-radius: 5px;
+    padding: 25px;
+    margin: 50px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.content-categorias, .content-anuncios, .content-artigo{
+    height: max-content;
+    width: 85%;
+    margin: 25px;
+    gap: 20px;
+}
+
+.categorias-list{
+    padding: 10px;
+}
+
+.categorias-list .icon-div{
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    border: none;
+    position: relative;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.categorias-list .icon-div:hover, .SubMenu-content:hover, .button-edit:hover{ /*Animação para aumentar*/
+    transform: scale(1.1);
+}
+
+.categorias-list .icon-div:hover i{
+    filter: blur(10px);
+}
+
+.categorias-list .icon-div i{
+    font-size: 50px;
+    border: none;
+    transition: filter 0.3s ease;
+}
+
+.categorias-list .categoria-overlay{
+    font-size: 15px;
+    position: absolute;
+    color: white;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.categorias-list .icon-div:hover .categoria-overlay{
+    opacity: 1;
+}
+
+/* ---- DESTAQUES ---- */
+
+.destaques-container{
+    height: max-content;
+    border-radius: 5px;
+    padding: 25px;
+    margin: 50px;
+    background-color: whitesmoke;
+    position: relative;
+    overflow: visible;
+}
+
+.div-destaques{
+    margin: 25px;
+}
+
+/*---- SWIPER CONTAINER ----*/
+.swiper-slide-active, 
+.swiper-slide-next,
+.swiper-slide {
+    justify-content: center!important;
+    display: flex!important;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after{
+    font-size: 25px!important;
+}
+
+.swiper-button-next,
+.swiper-button-prev
+{
+    top: 135px!important;
+    margin-top: 0px!important;
+    width: 50px!important;
+    height: 50px!important;
+    font-size: 1px!important;
+    border-radius: 5px!important;
+    backdrop-filter: blur(8px)!important;
+    background-color: rgba(245, 245, 245, 0.45);
+    color: rgba(2, 40, 44, 0.8)!important;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #1DD3B0!important;
+}
+
+/* ----------------------- */
+
+.artigo-card, .anuncio-card {
+    width: 250px;
+    height: 350px;
+    background: white;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  }
+
+  /* EFEITO FLIP 3D */
+
+  .artigo-card-inner, .anuncio-card-inner {
+  position: relative;
+  width: 100%;
+  height: 90%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.artigo-card:hover .artigo-card-inner,
+.anuncio-card:hover .anuncio-card-inner {
+  transform: rotateY(180deg);
+}
+
+.artigo-card-front, .artigo-card-back,
+.anuncio-card-front, .anuncio-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.artigo-card-front img,
+.anuncio-card-front img,
+.artigo-imagem img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.artigo-card-back, .anuncio-card-back {
+  background-color: #f8f9fa;
+  color: #333;
+  transform: rotateY(180deg);
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 1rem;
+
+}
+
+.artigo-card-footer{
+  padding-top: 5px;
+}
+  
+/* ------------------ */
+
+/* EFEITO CORAÇÃO */
+
+.heart-icon, .eye-button, .destacar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 24px;  
+  height: 24px;
+  position: relative;
+}
+
+.heart-empty,
+.heart-filled,
+.eye-button, 
+.destacar-button {
+  font-size: 1.4rem;
+  transition: opacity 0.3s ease;
+}
+
+.heart-empty, .eye-button, .destacar-button {
+  opacity: 1;
+  color: #999;
+}
+
+.heart-filled {
+  opacity: 0;
+  color: red;
+  position: absolute; 
+}
+
+.heart-icon:hover .heart-empty {
+  opacity: 0;
+}
+
+.heart-icon:hover .heart-filled {
+  opacity: 1;
+}
+
+/* ------------ */
+
+/* TopButton */
+
+.TopButton {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background-color: whitesmoke;
+  color: #333;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.TopButton:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+.TopButton.show {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.TopButton.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- SubMenu ---- */
+.SubMenu-path{
+    text-decoration: none;
+    /* border-bottom: 1.5px solid black; */
+}

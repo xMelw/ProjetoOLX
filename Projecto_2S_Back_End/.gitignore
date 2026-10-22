@@ -1,0 +1,13 @@
+node_modules/
+data/*.sqlite
+data/*.sqlite-*
+.env
+uploads/*
+!uploads/placeholder.png
+!uploads/iphone.jpg
+!uploads/macbook.jpg
+!uploads/ipad.jpg
+!uploads/applewatch.jpg
+!uploads/cacto.jpg
+!uploads/mala.jpg
+!uploads/sapatos.jpg
