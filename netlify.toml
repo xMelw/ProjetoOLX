@@ -1,14 +1,14 @@
 [build]
-  # Nome exato da pasta do teu frontend no GitHub
+  # Pasta do frontend
   base = "Projecto_2S_Front_End"
   
-  # Comando de build do projeto
-  command = "npm run build"
+  # Força o Netlify a ignorar o package.json e a compilar o Vite diretamente
+  command = "npx vite build"
   
-  # Pasta onde o Vite guarda os ficheiros compilados
+  # Pasta de publicação gerada pelo Vite
   publish = "dist"
 
-# Redirecionamento obrigatório para o React Router (evita o erro 404)
+# Redirecionamento obrigatório para o Router do React
 [[redirects]]
   from = "/*"
   to = "/index.html"
