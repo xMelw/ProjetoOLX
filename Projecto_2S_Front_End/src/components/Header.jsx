@@ -84,6 +84,11 @@ function Header() {
 
           {/* Botões de navegação */}
           <nav className="buttons-info d-flex align-items-center justify-content-end">
+            <button type="button" className="btn">
+              <Link to="/anuncios" className="icon text-decoration-none text-dark">
+                <i className="bi bi-shop-window"></i>&nbsp; Explorar
+              </Link>
+            </button>
             {userLoggedIn && (
               <button type="button" className="btn">
                 <Link to="/chat" className="icon text-decoration-none text-dark">
@@ -91,7 +96,6 @@ function Header() {
                 </Link>
               </button>
             )}
-
             {userLoggedIn && (
               <button type="button" className="btn">
                 <Link
@@ -122,7 +126,6 @@ function Header() {
                 </Link>
               </button>
             )}
-
             {userLoggedIn && (
               <button
                 type="button"
@@ -161,3 +164,4 @@ function Header() {
 }
 
 export default Header;
+
