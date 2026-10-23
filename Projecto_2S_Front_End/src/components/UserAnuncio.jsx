@@ -165,93 +165,20 @@ const User_Anuncios = ({ useranuncio }) => {
 };
 
 const StyledWrapper = styled.div`
-  .card {
-    position: relative;
-    width: 250px;
-    height: 350px;
-    aspect-ratio: 16/9;
-    background-color: #f2f2f2;
-    overflow: hidden;
-    perspective: 1000px;
-    box-shadow: 0 0 0 5px #ffffff80;
-    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    opacity: ${(props) => (props.estado === "ativo" ? 1 : 0.5)};
-  }
-  .estado-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 10px;
-    height: 10px;
-    background-color: ${(props) =>
-      props.estado === "ativo"
-        ? "#00FF00"
-        : props.estado === "pendente"
-        ? "#FFA500"
-        : props.estado === "terminado"
-        ? "#00BFFF"
-        : props.estado === "excluido"
-        ? "#FF0000"
-        : "transparent"};
-    z-index: 2;
-    transition: opacity 0.25s ease;
-  }
-
-  .card:hover .estado-badge {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
-    opacity: 1;
-  }
-
-  .card__content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 10px;
-    box-sizing: border-box;
-    backdrop-filter: blur(8px) !important;
-    background-color: rgba(1, 1, 1, 0.65);
-    transform: rotateX(-90deg);
-    transform-origin: bottom;
-    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 2px solid
-      ${(props) =>
-        props.estado === "ativo"
-          ? "#00FF00"
-          : props.estado === "pendente"
-          ? "#FFA500"
-          : props.estado === "terminado"
-          ? "#00BFFF"
-          : props.estado === "excluido"
-          ? "#FF0000"
-          : "transparent"};
-  }
-
-  .card:hover .card__content {
-    transform: rotateX(0deg);
-  }
-
-  .card__title {
-    font-size: 20px;
-    color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .card__preco,
-  .card__views,
-  .card__categoria,
-  .card__data_hora,
-  .card__estado {
-    font-size: 13.5px;
-    color: #ffffff;
-  }
-`;
-
+  .card { position: relative; width: 250px; height: 350px; aspect-ratio: 16/9; background: #f4f7f6; overflow: hidden; perspective: 1000px; border: 1px solid rgba(20, 52, 48, 0.08); box-shadow: 0 8px 22px rgba(20, 52, 48, 0.12); transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease; opacity: ${(props) => (props.estado === "ativo" ? 1 : 0.68)}; }
+  .estado-badge { position: absolute; top: 14px; right: 14px; width: 12px; height: 12px; border-radius: 50%; background-color: ${(props) => props.estado === "ativo" ? "#1DD3B0" : props.estado === "pendente" ? "#FFB547" : props.estado === "terminado" ? "#6C8CF5" : props.estado === "excluido" ? "#E76F6F" : "#A9B3B1"}; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.82); z-index: 2; transition: opacity 0.2s ease; }
+  .card:hover { transform: translateY(-4px) scale(1.025); box-shadow: 0 16px 32px rgba(20, 52, 48, 0.2); opacity: 1; }
+  .card__content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; color: #243a37; background: linear-gradient(145deg, rgba(250, 253, 252, 0.97), rgba(238, 247, 244, 0.96)); backdrop-filter: blur(10px); border: 1px solid rgba(29, 211, 176, 0.3); opacity: 0; transform: translateY(12px); transition: opacity 0.28s ease, transform 0.32s ease; }
+  .card:hover .card__content, .card:focus-within .card__content { opacity: 1; transform: translateY(0); }
+  .card:hover .estado-badge { opacity: 0; }
+  .card__title { font-size: 20px; color: #203a36; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card__preco { color: #0b9f83; font-size: 17px; font-weight: 700; }
+  .card__views, .card__categoria, .card__data_hora { color: #52635f; font-size: 13px; }
+  .card__content hr { margin: 6px 0; border-color: rgba(36, 58, 55, 0.12); opacity: 1; }
+  .card__estado { padding: 5px 10px; border-radius: 999px; color: ${(props) => props.estado === "ativo" ? "#087e68" : props.estado === "pendente" ? "#98610b" : props.estado === "excluido" ? "#a43d3d" : "#4f639f"}; background: ${(props) => props.estado === "ativo" ? "#d8f7ef" : props.estado === "pendente" ? "#fff0d6" : props.estado === "excluido" ? "#fde3e3" : "#e5eafe"}; font-size: 12px; font-weight: 700; text-transform: capitalize; }
+  .button-edit { width: 38px; height: 38px; align-items: center; justify-content: center; color: #fff; background: #ff6b1a !important; border: 0; box-shadow: 0 5px 12px rgba(255, 107, 26, 0.24) !important; transition: background 0.2s ease, transform 0.2s ease; cursor: pointer; }
+  .button-edit:hover { background: #e95a0b !important; transform: translateY(-2px); }
+  .button-edit i { color: inherit !important; }
+  @media (prefers-reduced-motion: reduce) { .card, .card__content, .button-edit { transition: none; } }
+`
 export default User_Anuncios;

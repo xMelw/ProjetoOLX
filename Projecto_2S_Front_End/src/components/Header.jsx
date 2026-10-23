@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/anunciosTuga.png";
 import ItemModal from "../components/ModalAnuncio";
 import api from "../services/api";
@@ -9,6 +9,7 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
   const [categorias, setCategorias] = useState([]);
   const [flashMessage, setFlashMessage] = useState("");
+  const navigate = useNavigate();
 
   // Ao montar, verifica se há flashMessage no localStorage e carrega
   useEffect(() => {
@@ -31,6 +32,19 @@ function Header() {
       localStorage.removeItem("flashMessage");
     }
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/logout");
+    } catch (error) {
+      console.error("Não foi possível terminar a sessão no servidor:", error);
+    } finally {
+      localStorage.removeItem("utilizador_id");
+      setUserLoggedIn(false);
+      setShowModal(false);
+      navigate("/login");
+    }
+  };
 
   const handleFormSubmit = async (data) => {
     try {
@@ -133,6 +147,11 @@ function Header() {
                 onClick={() => setShowModal(true)}
               >
                 Anunciar e Vender
+              </button>
+            )}
+            {userLoggedIn && (
+              <button type="button" className="btn header-logout" onClick={handleLogout}>
+                <i className="bi bi-box-arrow-right" aria-hidden="true"></i>&nbsp; Sair
               </button>
             )}
           </nav>

@@ -225,12 +225,12 @@ function Artigo(props) {
                   {destaque && (
                     <button
                       type="button"
-                      className="destacar-button border-0 bg-transparent text-danger"
+                      className="destacar-button border-0 bg-transparent"
                       data-bs-toggle="tooltip"
                       data-bs-placement="bottom"
                       title="Produto destacado"
                     >
-                      <i className="bi bi-star-fill text-orange"></i>
+                      <i className="bi bi-star-fill text-warning"></i>
                     </button>
                   )}
                 </div>

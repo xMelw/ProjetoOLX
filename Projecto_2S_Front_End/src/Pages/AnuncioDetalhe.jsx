@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BotaoToTOP from "../components/ScrollToTop";
@@ -9,6 +9,7 @@ import api from "../services/api";
 
 const AnuncioDetalhe = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [anuncio, setAnuncio] = useState(null);
   const [relacionados, setRelacionados] = useState([]);
 
@@ -56,6 +57,20 @@ const AnuncioDetalhe = () => {
   return (
     <>
       <Header />
+      <main className="container py-3">
+        <button
+          type="button"
+          className="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
+          onClick={() => {
+            const historyIndex = window.history.state?.idx;
+            if (Number.isInteger(historyIndex) && historyIndex > 0) navigate(-1);
+            else navigate("/anuncios");
+          }}
+        >
+          <i className="bi bi-arrow-left" aria-hidden="true"></i>
+          Voltar aos anúncios
+        </button>
+      </main>
       <ArtigoContent {...anuncio} />
       <Relacionados artigos={relacionados} h2Titulo="Relacionados" />
       <BotaoToTOP />
