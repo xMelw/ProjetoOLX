@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import BotaoToTOP from "../components/botaoToTop";
-import FavoritosComponent from "../components/favoritos";
+import BotaoToTOP from "../components/ScrollToTop";
+import FavoritosComponent from "../components/ListingsSection";
 import api from "../services/api";
 
 const Favoritos = () => {

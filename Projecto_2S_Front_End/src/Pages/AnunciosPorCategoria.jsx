@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 import AnunciosModel from "../parts/AnunciosModel";
-import BotaoToTOP from "../components/botaoToTop";
+import BotaoToTOP from "../components/ScrollToTop";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Header from "../components/Header";
-import BotaoToTOP from "../components/botaoToTop";
+import BotaoToTOP from "../components/ScrollToTop";
 import Mensage from "../parts/ModelMensage";
 import styled from "styled-components";
 import api from "../services/api";

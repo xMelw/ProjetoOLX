@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import Categorias from "../components/categorias";
+import Categorias from "../components/Categories";
 import Footer from "../components/Footer";
-import Destaques from "../components/destaques";
-import Anuncios from "../components/favoritos"; // este componente espera props { anuncios, h2Titulo }
-import BotaoToTOP from "../components/botaoToTop";
-import SubMenu from "../components/submenu";
+import Destaques from "../components/FeaturedListings";
+import Anuncios from "../components/ListingsSection"; // este componente espera props { anuncios, h2Titulo }
+import BotaoToTOP from "../components/ScrollToTop";
+import SubMenu from "../components/SubMenu";
 import api from "../services/api";
 
 const Index = () => {
@@ -48,7 +48,7 @@ const Index = () => {
     api.get("/anuncios/maisvistos/top30")
       .then((res) => {
         const mapped = res.data.map((a) => ({
-          // o componente Anuncios (“favoritos.jsx”) repassa estes objetos para AnuncioModel
+          // o componente Anuncios (“ListingsSection.jsx”) repassa estes objetos para AnuncioModel
           id: a.anuncio_id,
           imagem: a.imagem 
             ? `http://localhost:5000/uploads/${a.imagem}` 
@@ -103,3 +103,4 @@ const Index = () => {
 };
 
 export default Index;
+

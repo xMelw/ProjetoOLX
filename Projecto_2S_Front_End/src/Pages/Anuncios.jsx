@@ -1,7 +1,7 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import ConjuntoAnuncios from "../components/favoritos";
-import BotaoToTOP from "../components/botaoToTop";
+import ConjuntoAnuncios from "../components/ListingsSection";
+import BotaoToTOP from "../components/ScrollToTop";
 
 // Importação de todas as imagens
 // adicionar novas imagens no file adjacente para poder exportar todos de uma só vez!

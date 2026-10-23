@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import BotaoToTOP from "../components/botaoToTop";
+import BotaoToTOP from "../components/ScrollToTop";
 import ProfileInfo from "../components/ProfileInfo";
-import SubMenu from "../components/submenu";
+import SubMenu from "../components/SubMenu";
 import User_Anuncios from "../components/UserAnuncio";
 import FeedbackSlider from "../parts/FeedBackSwiper";
 import ModalUser from "../components/ModalUser";

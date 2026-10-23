@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom"; // serve para controlar e fazer as rotas
-import ScrollToTop from "./components/botaoToTop";
+import ScrollToTop from "./components/ScrollToTop";
 
 // ---- Importação do Bootstrap ----
 import "bootstrap-icons/font/bootstrap-icons.css";

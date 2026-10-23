@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import BotaoToTOP from "../components/botaoToTop";
+import BotaoToTOP from "../components/ScrollToTop";
 import ArtigoContent from "../components/Artigo";
-import Relacionados from "../components/destaques";
+import Relacionados from "../components/FeaturedListings";
 import api from "../services/api";
 
 const AnuncioDetalhe = () => {
