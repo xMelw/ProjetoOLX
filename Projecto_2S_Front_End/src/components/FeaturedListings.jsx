@@ -4,9 +4,9 @@ import DestaquesSwiper from "../parts/DestaquesSwiper";
 
 function Destaques({ artigos, h2Titulo }) {
   return (
-    <section id="Destaques">
+    <div>
       <div className="destaques-container d-flex flex-column justify-content-center">
-        <h2 className="text-dark align-self-center">{h2Titulo}</h2>
+        {h2Titulo && <h2 className="text-dark align-self-center">{h2Titulo}</h2>}
         <div className="div-destaques">
           <DestaquesSwiper artigos={artigos} />
         </div>
@@ -18,7 +18,7 @@ function Destaques({ artigos, h2Titulo }) {
         }
         `}
       </style>
-    </section>
+    </div>
   );
 }
 

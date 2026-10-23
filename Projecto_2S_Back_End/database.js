@@ -15,6 +15,96 @@ const get = async (sql, params = []) => db.prepare(sql).get(...params);
 const all = async (sql, params = []) => db.prepare(sql).all(...params);
 const hashPassword = (password, salt = crypto.randomBytes(16).toString('hex')) => ({ salt, hash: crypto.scryptSync(password, salt, 64).toString('hex') });
 
+async function seedDemoConversations() {
+  const conversations = [
+    {
+      adTitle: 'iPhone 13 128 GB',
+      sellerEmail: 'miguel@example.pt',
+      buyerEmail: 'tiago@example.pt',
+      messages: [
+        ['buyer', 'Olá! Ainda está disponível? Consegue enviar mais fotografias?'],
+        ['seller', 'Olá, sim. Está disponível e posso enviar fotografias por aqui.'],
+        ['buyer', 'Obrigado! Posso levantar no Porto este fim de semana?'],
+        ['seller', 'Pode ser no sábado à tarde. Combinamos a hora por mensagem.']
+      ]
+    },
+    {
+      adTitle: 'MacBook Air M1',
+      sellerEmail: 'ines@example.pt',
+      buyerEmail: 'tiago@example.pt',
+      messages: [
+        ['buyer', 'Boa tarde. O carregador original está incluído?'],
+        ['seller', 'Boa tarde! Sim, segue com o carregador original.'],
+        ['buyer', 'Perfeito. Aceita entrega em mão em Coimbra?'],
+        ['seller', 'Sim, podemos combinar junto ao centro da cidade.']
+      ]
+    },
+    {
+      adTitle: 'Cacto decorativo',
+      sellerEmail: 'ines@example.pt',
+      buyerEmail: 'miguel@example.pt',
+      messages: [
+        ['buyer', 'Olá! Qual é aproximadamente a altura do cacto?'],
+        ['seller', 'Olá! Tem cerca de 25 cm, incluindo o vaso.']
+      ]
+    }
+  ];
+
+  for (const conversation of conversations) {
+    const ad = await get(
+      'SELECT a.id FROM ads a JOIN users seller ON seller.id=a.user_id WHERE a.title=? AND seller.email=?',
+      [conversation.adTitle, conversation.sellerEmail]
+    );
+    const buyer = await get('SELECT id FROM users WHERE email=?', [conversation.buyerEmail]);
+    const seller = await get('SELECT id FROM users WHERE email=?', [conversation.sellerEmail]);
+    if (!ad || !buyer || !seller) continue;
+
+    for (const [sender, body] of conversation.messages) {
+      const senderId = sender === 'buyer' ? buyer.id : seller.id;
+      const recipientId = sender === 'buyer' ? seller.id : buyer.id;
+      const exists = await get(
+        'SELECT id FROM messages WHERE ad_id=? AND sender_id=? AND recipient_id=? AND body=?',
+        [ad.id, senderId, recipientId, body]
+      );
+      if (!exists) {
+        await run(
+          'INSERT INTO messages(ad_id,sender_id,recipient_id,body) VALUES (?,?,?,?)',
+          [ad.id, senderId, recipientId, body]
+        );
+      }
+    }
+  }
+}
+
+async function seedDemoAds() {
+  const demoAds = [
+    ['Câmara Canon EOS M50','Câmara mirrorless leve, com objetiva 15-45 mm e bateria extra.',420,'placeholder.png',1,'Usado','Tecnologia','miguel@example.pt',68,'ines@example.pt'],
+    ['Cadeira ergonómica de escritório','Cadeira ajustável com apoio lombar, em bom estado de conservação.',95,'placeholder.png',1,'Usado','Casa e Jardim','ines@example.pt',54,'tiago@example.pt'],
+    ['Bicicleta de estrada em alumínio','Bicicleta revista recentemente, tamanho M, pronta a utilizar.',310,'placeholder.png',1,'Usado','Desporto','tiago@example.pt',41,'miguel@example.pt'],
+    ['Guitarra acústica Yamaha','Guitarra acústica bem estimada, inclui saco de transporte.',125,'placeholder.png',1,'Usado','Música','miguel@example.pt',39,'tiago@example.pt'],
+    ['Casaco de inverno tamanho M','Casaco quente e impermeável, pouco usado, sem defeitos.',48,'placeholder.png',1,'Usado','Moda','ines@example.pt',36,'miguel@example.pt'],
+    ['Mesa de centro em madeira','Mesa de centro restaurada, com acabamento natural e medidas compactas.',75,'placeholder.png',1,'Usado','Casa e Jardim','tiago@example.pt',29,'ines@example.pt']
+  ];
+
+  for (const [title, description, price, image, featured, condition, categoryName, sellerEmail, views, favoriteEmail] of demoAds) {
+    const seller = await get('SELECT id FROM users WHERE email=?', [sellerEmail]);
+    const favoriteUser = await get('SELECT id FROM users WHERE email=?', [favoriteEmail]);
+    const category = await get('SELECT id FROM categories WHERE name=?', [categoryName]);
+    if (!seller || !category) continue;
+
+    let ad = await get('SELECT id FROM ads WHERE user_id=? AND title=?', [seller.id, title]);
+    if (!ad) {
+      ad = await run(
+        'INSERT INTO ads(user_id,category_id,title,description,price,image,show_contact,featured,condition,status,views) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        [seller.id, category.id, title, description, price, image, 1, featured, condition, 'active', views]
+      );
+    }
+    if (favoriteUser) {
+      await run('INSERT OR IGNORE INTO favorites(user_id,ad_id) VALUES (?,?)', [favoriteUser.id, ad.id]);
+    }
+  }
+}
+
 async function initializeDatabase() {
   await run('PRAGMA foreign_keys = ON');
   await run('PRAGMA journal_mode = WAL');
@@ -40,7 +130,11 @@ async function initializeDatabase() {
     color=CASE name WHEN 'Tecnologia' THEN '#2563eb' WHEN 'Casa e Jardim' THEN '#16a34a' WHEN 'Moda' THEN '#db2777' WHEN 'Desporto' THEN '#ea580c' WHEN 'Veículos' THEN '#475569' WHEN 'Livros' THEN '#7c3aed' WHEN 'Música' THEN '#0891b2' ELSE '#64748b' END
     WHERE icon IS NULL OR color IS NULL`);
   const count = await get('SELECT COUNT(*) AS n FROM users');
-  if (count.n) return;
+  if (count.n) {
+    await seedDemoAds();
+    await seedDemoConversations();
+    return;
+  }
 
   await run('BEGIN IMMEDIATE TRANSACTION');
   try {
@@ -93,6 +187,8 @@ async function initializeDatabase() {
     await run('INSERT INTO messages(ad_id,sender_id,recipient_id,body,is_read) VALUES (?,?,?,?,?)',[adRows[0].id,userIds['miguel@example.pt'],userIds['ines@example.pt'],'Sim, está disponível. Posso combinar entrega em Lisboa.',0]);
     await run('INSERT INTO feedback(reviewer_id,reviewed_user_id,rating,review,status) VALUES (?,?,?,?,?)',[userIds['ines@example.pt'],userIds['miguel@example.pt'],5,'Comunicação rápida e artigo conforme descrito.','active']);
     await run('INSERT INTO feedback(reviewer_id,reviewed_user_id,rating,review,status) VALUES (?,?,?,?,?)',[userIds['tiago@example.pt'],userIds['ines@example.pt'],4,'Negócio simples e simpático.','pending']);
+    await seedDemoAds();
+    await seedDemoConversations();
     await run('COMMIT');
   } catch (error) {
     await run('ROLLBACK');

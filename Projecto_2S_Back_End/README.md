@@ -22,6 +22,10 @@ As contas ativas partilham a palavra-passe `AnunciosTuga123!`:
 
 `carolina@example.pt` é uma conta de demonstração pendente de aprovação. Novos registos também ficam pendentes; o formulário pede nome, email, palavra-passe e telemóvel.
 
+## Conversas de demonstração
+
+Ao iniciar, a API acrescenta conversas de exemplo entre as contas de demonstração para anúncios como iPhone, MacBook e cacto. A carga é idempotente: não duplica estas mensagens em arranques seguintes. Pode entrar com as contas ativas acima e abrir **Chat** para as consultar.
+
 ## Dados
 
 O esquema está em `database.js`. Para começar de novo, pare o servidor e remova o ficheiro `data/anuncios-tuga.sqlite` (e os ficheiros `-wal`/`-shm`, se existirem); o servidor volta a criar e semear a base de dados no arranque seguinte. As imagens de demonstração estão em `uploads/`.

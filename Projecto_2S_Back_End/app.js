@@ -90,7 +90,7 @@ app.put('/utilizador/atualizar', auth, upload.single('imagem'), asyncRoute(async
 }));
 
 // Anúncios públicos e operações do utilizador
-app.get('/anuncios/destaque', asyncRoute(async (_req, res) => res.json((await adRows("WHERE a.status='active' AND a.featured=1", [], 'ORDER BY a.created_at DESC')).map(mapAd))));
+app.get('/anuncios/destaque', asyncRoute(async (_req, res) => res.json((await adRows("WHERE a.status='active'", [], 'ORDER BY a.featured DESC,a.views DESC,a.created_at DESC LIMIT 12')).map(mapAd))));
 app.get('/anuncios/maisvistos/top30', asyncRoute(async (_req, res) => res.json((await adRows("WHERE a.status='active'", [], 'ORDER BY a.views DESC LIMIT 30')).map(mapAd))));
 app.get('/anuncios/categoria/:id', asyncRoute(async (req, res) => res.json((await adRows("WHERE a.status='active' AND a.category_id=?",[req.params.id],'ORDER BY a.created_at DESC')).map(mapAd))));
 app.get('/anuncios/utilizador/:id', auth, asyncRoute(async (req, res) => {

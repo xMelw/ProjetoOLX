@@ -61,7 +61,7 @@ function DestaquesSwiper({ artigos = [] }) {
     e.stopPropagation(); // evita interferir em qualquer clique no slide
 
     if (!userLoggedIn || !userId) {
-      // Apenas utilizadores logados podem adicionar aos favoritos.
+      navigate('/login');
       return;
     }
 
@@ -88,8 +88,12 @@ function DestaquesSwiper({ artigos = [] }) {
         })
         .catch((err) => {
           console.error("Erro ao adicionar favorito", err);
-          if (err.response?.status === 409) {
-            // já existia favorito, apenas marcamos localmente
+          if (err.response?.status === 401) {
+            localStorage.removeItem("utilizador_id");
+            setUserLoggedIn(false);
+            setUserId(null);
+            navigate('/login');
+          } else if (err.response?.status === 409) {
             setFavoritos((prev) => ({ ...prev, [artigoId]: true }));
           } else if (err.response?.status === 403) {
             setErrorMessage("Ação não permitida. Verifique sua sessão.");
@@ -172,8 +176,12 @@ function DestaquesSwiper({ artigos = [] }) {
 
                 <div className="artigo-card-footer d-flex justify-content-between">
                   <p className="artigo-preco m-0 fw-bold">{preco}</p>
-                  <span
-                    className="heart-icon"
+                  <button
+                    type="button"
+                    className="heart-icon border-0 bg-transparent p-0"
+                    aria-label={favoritos[id] ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                    aria-pressed={Boolean(favoritos[id])}
+                    title={favoritos[id] ? "Remover dos favoritos" : "Adicionar aos favoritos"}
                     onClick={(e) => handleLikeToggle(e, id)}
                     style={{ cursor: "pointer" }}
                   >
@@ -184,7 +192,7 @@ function DestaquesSwiper({ artigos = [] }) {
                           : "bi-heart text-dark"
                       }`}
                     ></i>
-                  </span>
+                  </button>
                 </div>
               </div>
             </SwiperSlide>
