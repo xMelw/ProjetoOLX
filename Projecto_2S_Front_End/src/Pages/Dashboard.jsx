@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
@@ -13,6 +14,8 @@ import {
 import './AdminStyle.css';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const [accessChecked, setAccessChecked] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 992);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,6 +51,16 @@ const AdminDashboard = () => {
   const [userFilterStatus, setUserFilterStatus] = useState('all');
   const [adCategoryFilterStatus, setAdCategoryFilterStatus] = useState('active');
   const [feedbackFilterStatus, setFeedbackFilterStatus] = useState('pending');
+
+  useEffect(() => {
+    api.get('/admin/stats', { withCredentials: true })
+      .then(() => setAccessChecked(true))
+      .catch((err) => {
+        localStorage.removeItem('utilizador_id');
+        localStorage.removeItem('utilizador_role');
+        navigate(err.response?.status === 401 ? '/login' : '/', { replace: true });
+      });
+  }, [navigate]);
 
   // O cliente partilhado usa a API local na porta 5000 e envia o cookie httpOnly.
 
@@ -259,6 +272,7 @@ const AdminDashboard = () => {
   // --- Efeitos para Carregar Dados ---
 
   useEffect(() => {
+    if (!accessChecked) return;
     const loadData = async () => {
       setIsLoading(true);
       setError(null);
@@ -289,7 +303,7 @@ const AdminDashboard = () => {
     };
 
     loadData();
-  }, [activeTab, userFilterStatus, adCategoryFilterStatus, feedbackFilterStatus, fetchData, fetchUsersByStatus, fetchAdsByStatus, fetchDashboardSummary, fetchAdsByCategoryStatus, fetchFeedbackByStatus, fetchRecentActivities, fetchFeedbackTotalsByStatus]);
+  }, [accessChecked, activeTab, userFilterStatus, adCategoryFilterStatus, feedbackFilterStatus, fetchData, fetchUsersByStatus, fetchAdsByStatus, fetchDashboardSummary, fetchAdsByCategoryStatus, fetchFeedbackByStatus, fetchRecentActivities, fetchFeedbackTotalsByStatus]);
 
 
   // Mock data para gráficos se a API não retornar dados mensais diretamente para Dashboard
@@ -302,41 +316,25 @@ const AdminDashboard = () => {
     { month: 'Jun', users: 55, ads: 27, revenue: 2500 }
   ];
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+  const COLORS = ['#1DD3B0', '#FF6B1A', '#72B7B2', '#F4B942', '#7D9B91'];
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChartIcon },
     { id: 'users', label: 'Utilizadores', icon: Users },
     { id: 'ads', label: 'Anúncios', icon: Package },
-    { id: 'analytics', label: 'Análises', icon: TrendingUp },
-    { id: 'messages', label: 'Mensagens', icon: MessageSquare },
-    { id: 'reports', label: 'Relatórios', icon: Flag },
-    { id: 'settings', label: 'Configurações', icon: Settings }
+    { id: 'messages', label: 'Feedbacks', icon: MessageSquare }
   ];
 
-  const StatCard = ({ title, value, change, icon, iconColorClass, iconBgClass }) => (
-    <div className="card h-100">
-      <div className="card-body d-flex flex-column justify-content-between">
-        <div className="d-flex align-items-center justify-content-between mb-3">
-          <div>
-            <p className="stat-card-title mb-1">{title}</p>
-            <h4 className="stat-card-value text-dark mb-0">{value}</h4>
-          </div>
-          {/* Usando classes para cor de fundo e cor do ícone */}
-          <div className={`stat-icon-wrapper rounded-circle ${iconBgClass}`}>
-            {React.createElement(icon, { size: 24, className: iconColorClass })}
-          </div>
+  const StatCard = ({ title, value, icon, iconColorClass, iconBgClass }) => (
+    <div className="card admin-stat-card h-100">
+      <div className="card-body d-flex align-items-center justify-content-between gap-3">
+        <div><p className="stat-card-title mb-1">{title}</p><h4 className="stat-card-value mb-0">{value}</h4></div>
+        <div className={`stat-icon-wrapper ${iconBgClass}`}>
+          {React.createElement(icon, { size: 23, className: iconColorClass })}
         </div>
-        {change && (
-          <div className={`d-flex align-items-center mt-2 stat-card-change ${change > 0 ? 'text-success' : 'text-danger'}`}>
-            {change > 0 ? <TrendingUp className="me-1" size={16} /> : <TrendingDown className="me-1" size={16} />}
-            {Math.abs(change)}% vs mês anterior
-          </div>
-        )}
       </div>
     </div>
   );
-
   const UserTable = () => (
     <div className="card">
       <div className="card-header d-flex justify-content-between align-items-center">
@@ -476,7 +474,7 @@ const AdminDashboard = () => {
                   <td>{ad.title}</td>
                   <td>{ad.user || `Utilizador ${ad.user_id}`}</td>
                   <td>{ad.category}</td>
-                  <td>{ad.price}</td>
+                  <td>{Number(ad.price).toLocaleString("pt-PT", { style: "currency", currency: "EUR" })}</td>
                   <td>
                     <span className={`badge ${
                       ad.status === 'active' ? 'text-bg-success' :
@@ -597,6 +595,8 @@ const AdminDashboard = () => {
       // Termina a sessão local mesmo quando a API já não está disponível.
     }
     localStorage.removeItem('utilizador_id');
+    localStorage.removeItem('utilizador_role');
+    localStorage.removeItem('utilizador_nome');
     window.location.assign('/login');
   };
 
@@ -605,117 +605,45 @@ const AdminDashboard = () => {
       case 'dashboard':
         return (
           <div className="container-fluid p-3">
-            {/* Stats Cards */}
-            <div className="row g-4 mb-4">
-              <div className="col-sm-6 col-lg-3">
-                <StatCard
-                  title="Total Utilizadores"
-                  value={dashboardStats.totalUsers.toLocaleString()}
-                  change={12}
-                  icon={Users}
-                  iconColorClass="color-primary-icon"
-                  iconBgClass="color-primary-bg"
-                />
-              </div>
-              <div className="col-sm-6 col-lg-3">
-                <StatCard
-                  title="Total Anúncios"
-                  value={dashboardStats.totalAds.toLocaleString()}
-                  change={8}
-                  icon={Package}
-                  iconColorClass="color-success-icon"
-                  iconBgClass="color-success-bg"
-                />
-              </div>
-              <div className="col-sm-6 col-lg-3">
-                <StatCard
-                  title="Total Visualizações"
-                  value={dashboardStats.totalViews.toLocaleString()}
-                  change={-3}
-                  icon={Eye}
-                  iconColorClass="color-warning-icon"
-                  iconBgClass="color-warning-bg"
-                />
-              </div>
-              <div className="col-sm-6 col-lg-3">
-                <StatCard
-                  title="Valor total das vendas"
-                  value={`${dashboardStats.totalRevenue.toLocaleString()}€`}
-                  change={15}
-                  icon={DollarSign}
-                  iconColorClass="color-info-icon"
-                  iconBgClass="color-info-bg"
-                />
-              </div>
+            <div className="admin-welcome mb-4">
+              <span className="admin-eyebrow">ANÚNCIOS TUGA · ADMINISTRAÇÃO</span>
+              <h2 className="mb-1">Resumo da plataforma</h2>
+              <p className="mb-0">Acompanha os anúncios, as contas e as avaliações da comunidade.</p>
             </div>
-
-            {/* Charts */}
-            <div className="row g-4 mb-4">
-              <div className="col-lg-6">
+            <div className="row g-3 mb-4">
+              <div className="col-sm-6 col-xl-3"><StatCard title="Utilizadores" value={dashboardStats.totalUsers.toLocaleString()} icon={Users} iconColorClass="color-primary-icon" iconBgClass="color-primary-bg" /></div>
+              <div className="col-sm-6 col-xl-3"><StatCard title="Anúncios" value={dashboardStats.totalAds.toLocaleString()} icon={Package} iconColorClass="color-info-icon" iconBgClass="color-info-bg" /></div>
+              <div className="col-sm-6 col-xl-3"><StatCard title="Anúncios ativos" value={dashboardStats.activeAds.toLocaleString()} icon={Eye} iconColorClass="color-success-icon" iconBgClass="color-success-bg" /></div>
+              <div className="col-sm-6 col-xl-3"><StatCard title="A aguardar revisão" value={dashboardStats.pendingAds.toLocaleString()} icon={Calendar} iconColorClass="color-warning-icon" iconBgClass="color-warning-bg" /></div>
+            </div>
+            <div className="row g-3">
+              <div className="col-lg-7">
                 <div className="card h-100">
-                  <div className="card-header">
-                    <h3 className="h5 text-dark mb-0">Estatísticas Mensais (Mock Data)</h3>
-                  </div>
+                  <div className="card-header"><h3 className="h5 mb-0">Anúncios ativos por categoria</h3></div>
                   <div className="card-body">
-                    <ResponsiveContainer width="100%" height={300}>
-                      <AreaChart data={monthlyData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Area type="monotone" dataKey="users" stackId="1" stroke="rgb(var(--bs-primary-rgb))" fill="rgba(var(--bs-primary-rgb), 0.2)" name="Utilizadores"/>
-                        <Area type="monotone" dataKey="ads" stackId="1" stroke="rgb(var(--bs-success-rgb))" fill="rgba(var(--bs-success-rgb), 0.2)" name="Anúncios"/>
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-lg-6">
-                <div className="card h-100">
-                  <div className="card-header">
-                    <h3 className="h5 text-dark mb-0">Distribuição por Categoria (Anúncios Ativos)</h3>
-                  </div>
-                  <div className="card-body">
-                    {categoriesData.length > 0 ? (
+                    {categoriesData.length ? (
                       <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                          <Pie
-                            data={categoriesData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {categoriesData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                          <Legend />
-                        </PieChart>
+                        <PieChart><Pie data={categoriesData} cx="50%" cy="50%" labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} outerRadius={100} dataKey="value">
+                          {categoriesData.map((entry, index) => <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />)}
+                        </Pie><Tooltip /><Legend /></PieChart>
                       </ResponsiveContainer>
-                    ) : (
-                      <div className="text-center text-muted py-5">Nenhum dado de categoria disponível.</div>
-                    )}
+                    ) : <div className="admin-empty">Ainda não existem anúncios ativos para apresentar.</div>}
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Recent Tables */}
-            <div className="row">
-              <div className="col-12">
-                <UserTable />
+              <div className="col-lg-5">
+                <div className="card h-100 admin-quick-card">
+                  <div className="card-body d-flex flex-column justify-content-center">
+                    <div className="admin-quick-icon"><Package size={24} /></div>
+                    <h3 className="h5 mt-3">Revisão de anúncios</h3>
+                    <p className="text-muted">Existem <strong>{dashboardStats.pendingAds}</strong> anúncios pendentes de aprovação.</p>
+                    <button type="button" className="btn btn-primary align-self-start" onClick={() => { setActiveTab('ads'); setAdCategoryFilterStatus('pending'); }}>Rever anúncios</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         );
-
       case 'users':
         return (
           <div className="container-fluid p-3">
@@ -936,8 +864,10 @@ const AdminDashboard = () => {
     }
   };
 
+  if (!accessChecked) return <div className="admin-loading"><span className="spinner-border" role="status"><span className="visually-hidden">A validar sessão de administração…</span></span></div>;
+
   return (
-    <div className="d-flex bg-light">
+    <div className="admin-dashboard d-flex">
       {/* Sidebar */}
       <div className={`sidebar d-flex flex-column ${sidebarOpen ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
         <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
@@ -1008,10 +938,10 @@ const AdminDashboard = () => {
 
               <div className="d-flex align-items-center gap-2">
                 <div className="user-avatar">
-                  A
+                  {localStorage.getItem("utilizador_nome")?.charAt(0).toUpperCase() || "A"}
                 </div>
                 <div className="small">
-                  <p className="fw-semibold text-dark mb-0">Admin</p>
+                  <p className="fw-semibold text-dark mb-0">{localStorage.getItem("utilizador_nome") || "Admin"}</p>
                   <p className="text-muted mb-0">Administrador</p>
                 </div>
               </div>

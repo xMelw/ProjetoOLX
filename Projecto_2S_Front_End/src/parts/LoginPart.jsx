@@ -19,10 +19,12 @@ const LoginPart = () => {
       
       if (res.data?.utilizador_id) {
         localStorage.setItem("utilizador_id", res.data.utilizador_id);
+        if (res.data?.role) localStorage.setItem("utilizador_role", res.data.role);
+        if (res.data?.nome) localStorage.setItem("utilizador_nome", res.data.nome);
       }
 
       setMensagem("Login efetuado com sucesso!");
-      setTimeout(() => navigate("/"), 1000);
+      setTimeout(() => navigate(res.data?.role === "admin" ? "/dashboard" : "/"), 500);
     } catch (err) {
       setMensagem(err.response?.data?.message || "Email ou palavra-passe incorretos.");
     }

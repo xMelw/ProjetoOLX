@@ -6,6 +6,7 @@ import api from "../services/api";
 
 function Header() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [categorias, setCategorias] = useState([]);
   const [flashMessage, setFlashMessage] = useState("");
@@ -15,6 +16,7 @@ function Header() {
   useEffect(() => {
     const storedId = localStorage.getItem("utilizador_id");
     setUserLoggedIn(!!storedId);
+    setIsAdmin(localStorage.getItem("utilizador_role") === "admin");
 
     api
       .get("/categorias", { withCredentials: true })
@@ -40,7 +42,10 @@ function Header() {
       console.error("Não foi possível terminar a sessão no servidor:", error);
     } finally {
       localStorage.removeItem("utilizador_id");
+      localStorage.removeItem("utilizador_role");
+      localStorage.removeItem("utilizador_nome");
       setUserLoggedIn(false);
+      setIsAdmin(false);
       setShowModal(false);
       navigate("/login");
     }
@@ -137,6 +142,13 @@ function Header() {
                   className="icon text-decoration-none text-dark"
                 >
                   <i className="bi bi-person"></i>&nbsp; Login
+                </Link>
+              </button>
+            )}
+            {isAdmin && (
+              <button type="button" className="btn">
+                <Link to="/dashboard" className="icon text-decoration-none text-dark">
+                  <i className="bi bi-speedometer2"></i>&nbsp; Administração
                 </Link>
               </button>
             )}
