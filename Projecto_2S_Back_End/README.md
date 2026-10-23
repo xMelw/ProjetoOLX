@@ -19,6 +19,8 @@ As contas ativas partilham a palavra-passe `AnunciosTuga123!`:
 - Utilizador: `miguel@example.pt`
 - Utilizador: `ines@example.pt`
 - Utilizador: `tiago@example.pt`
+- Utilizador de demonstração: `sofia.demo@example.pt`
+- Utilizador de demonstração: `rui.demo@example.pt`
 
 `carolina@example.pt` é uma conta de demonstração pendente de aprovação. Novos registos também ficam pendentes; o formulário pede nome, email, palavra-passe e telemóvel.
 

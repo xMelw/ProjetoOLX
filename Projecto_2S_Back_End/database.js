@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
 const crypto = require('crypto');
+const { seedAdditionalDemoData } = require('./demoData');
 
 const dbPath = path.resolve(process.env.DB_PATH || path.join(__dirname, 'data', 'anuncios-tuga.sqlite'));
 fs.mkdirSync(path.dirname(dbPath), { recursive: true });
@@ -133,6 +134,7 @@ async function initializeDatabase() {
   if (count.n) {
     await seedDemoAds();
     await seedDemoConversations();
+    await seedAdditionalDemoData({ get, run, hashPassword });
     return;
   }
 
@@ -189,6 +191,7 @@ async function initializeDatabase() {
     await run('INSERT INTO feedback(reviewer_id,reviewed_user_id,rating,review,status) VALUES (?,?,?,?,?)',[userIds['tiago@example.pt'],userIds['ines@example.pt'],4,'Negócio simples e simpático.','pending']);
     await seedDemoAds();
     await seedDemoConversations();
+    await seedAdditionalDemoData({ get, run, hashPassword });
     await run('COMMIT');
   } catch (error) {
     await run('ROLLBACK');
