@@ -1,0 +1,15 @@
+[build]
+  # Nome exato da pasta do teu frontend no GitHub
+  base = "Projecto_2S_Front_End"
+  
+  # Comando de build do projeto
+  command = "npm run build"
+  
+  # Pasta onde o Vite guarda os ficheiros compilados
+  publish = "dist"
+
+# Redirecionamento obrigatório para o React Router (evita o erro 404)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
