@@ -1,0 +1,2 @@
+const router=require('express').Router();const asyncRoute=require('../utils/asyncRoute');const controller=require('../controllers/feedback.controller');
+router.get('/feedbacks/media/:id',asyncRoute(controller.average));router.get('/feedbacks/recebidos',asyncRoute(controller.received));module.exports=router;

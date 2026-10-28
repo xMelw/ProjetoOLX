@@ -37,4 +37,4 @@ O comando que gera os ficheiros otimizados para produção continua disponível 
 npm run build:production
 ```
 
-O código da aplicação está em `src/`, organizado em páginas (`Pages/`), componentes reutilizáveis (`components/`), blocos de interface (`parts/`), recursos gráficos (`assets/`) e serviços (`services/`). A API usada pela interface está configurada em `src/services/api.js`.
+O código está organizado por responsabilidades em `src/models/` (acesso à API), `src/controllers/` (estado e ações da aplicação) e `src/views/` (páginas e componentes React). As views consomem controllers; os controllers coordenam o estado e chamam models. Os recursos gráficos ficam em `src/views/assets/`.

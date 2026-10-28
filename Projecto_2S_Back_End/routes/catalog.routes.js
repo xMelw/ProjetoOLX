@@ -1,0 +1,2 @@
+const router=require('express').Router();const asyncRoute=require('../utils/asyncRoute');const controller=require('../controllers/catalog.controller');
+router.get('/health',controller.health);router.get('/localizacoes',asyncRoute(controller.locations));router.get('/categorias',asyncRoute(controller.categories));module.exports=router;

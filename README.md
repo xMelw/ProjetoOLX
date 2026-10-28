@@ -1,12 +1,13 @@
 # Anúncios Tuga
 
-Aplicação de anúncios com uma interface React/Vite e uma API Express com base de dados SQLite.
+Aplicação de anúncios com frontend React/Vite e API Express/SQLite.
 
-## Estrutura
+## Arquitetura MVC
 
-- `Projecto_2S_Back_End/` — API, acesso à base de dados e imagens carregadas.
-- `Projecto_2S_Front_End/` — interface web; o código da aplicação está em `src/`.
-- `Projecto_2S_Back_End/data/` — base de dados SQLite local criada pela API.
-- `Projecto_2S_Back_End/uploads/` — imagens disponibilizadas pela API.
+- `Projecto_2S_Front_End/src/models/` contém os clientes e operações de acesso à API.
+- `Projecto_2S_Front_End/src/controllers/` contém hooks e controladores que ligam modelos ao estado e às ações da interface.
+- `Projecto_2S_Front_End/src/views/` contém páginas, componentes e recursos visuais React. As views comunicam com controllers; não importam models diretamente.
+- `Projecto_2S_Back_End/routes/` declara endpoints; `controllers/` valida pedidos e prepara respostas; `models/` contém acesso SQL e regras de persistência.
+- `middleware/` trata autenticação e uploads. `database.js` é infraestrutura para SQLite, schema e carga inicial; `app.js` compõe a API e `server.js` inicia-a.
 
-O frontend e o backend têm dependências e comandos próprios. Consulte os respetivos `README.md` para iniciar cada parte.
+Frontend e backend mantêm os seus `package.json` e comandos próprios. Consulte os README de cada aplicação para instruções de execução.

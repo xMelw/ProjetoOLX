@@ -1,6 +1,7 @@
 import { spawn, execFile } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import process from "node:process";
 
 const frontendDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const backendDir = path.resolve(frontendDir, "..", "Projecto_2S_Back_End");
@@ -46,9 +47,49 @@ function start(name, args, cwd) {
   return child;
 }
 
-console.log("A iniciar frontend e API. Prima Ctrl+C para terminar ambos.");
-start("Frontend", ["run", "dev"], frontendDir);
-start("Backend", ["start"], backendDir);
+async function isApiReady(url) {
+  try {
+    const response = await fetch(url, { signal: AbortSignal.timeout(1500) });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function waitForApi(url, timeoutMs = 30000) {
+  const deadline = Date.now() + timeoutMs;
+  let lastError;
+  while (!stopping && Date.now() < deadline) {
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(2000) });
+      if (response.ok) return;
+      lastError = new Error(`A API respondeu HTTP ${response.status}.`);
+    } catch (error) {
+      lastError = error;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  if (!stopping) throw new Error(`A API não ficou pronta em ${timeoutMs / 1000} segundos. ${lastError?.message || ""}`);
+}
+
+async function main() {
+  const healthUrl = "http://localhost:5000/health";
+  if (await isApiReady(healthUrl)) {
+    console.log("A API já está ativa.");
+  } else {
+    console.log("A iniciar a API e a aguardar pela base de dados.");
+    start("Backend", ["start"], backendDir);
+    await waitForApi(healthUrl);
+  }
+  if (stopping) return;
+  console.log("API pronta. A iniciar o frontend. Prima Ctrl+C para terminar ambos.");
+  start("Frontend", ["run", "dev"], frontendDir);
+}
+
+main().catch((error) => {
+  console.error(error.message);
+  stopAll(1);
+});
 
 process.on("SIGINT", () => stopAll(0));
 process.on("SIGTERM", () => stopAll(0));

@@ -1,0 +1,182 @@
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../../assets/anunciosTuga.png";
+import ItemModal from "../components/ModalAnuncio";
+import { logout, createAd, getCategories } from "../../controllers/headerController";
+
+function Header() {
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [categorias, setCategorias] = useState([]);
+  const [flashMessage, setFlashMessage] = useState("");
+  const navigate = useNavigate();
+
+  // Ao montar, verifica se há flashMessage no localStorage e carrega
+  useEffect(() => {
+    const storedId = localStorage.getItem("utilizador_id");
+    setUserLoggedIn(!!storedId);
+    setIsAdmin(localStorage.getItem("utilizador_role") === "admin");
+
+    getCategories().then((data) => setCategorias(data))
+      .catch((err) => {
+        console.error("Erro ao buscar categorias:", err);
+      });
+
+    // Verifica se existe mensagem armazenada para exibir
+    const msg = localStorage.getItem("flashMessage");
+    if (msg) {
+      setFlashMessage(msg);
+      localStorage.removeItem("flashMessage");
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Não foi possível terminar a sessão no servidor:", error);
+    } finally {
+      localStorage.removeItem("utilizador_id");
+      localStorage.removeItem("utilizador_role");
+      localStorage.removeItem("utilizador_nome");
+      setUserLoggedIn(false);
+      setIsAdmin(false);
+      setShowModal(false);
+      navigate("/login");
+    }
+  };
+
+  const handleFormSubmit = async (data) => {
+    try {
+      const formCreate = new FormData();
+      formCreate.append("titulo", data.titulo);
+      formCreate.append("categoria_id", data.categoria_id);
+      formCreate.append("preco", data.preco);
+      formCreate.append("discricao", data.discricao);
+      formCreate.append("mostrar_contact", data.mostrar_contact);
+      formCreate.append("destaque", data.destaque);
+      formCreate.append("estado", data.estado);
+      if (data.imagem) formCreate.append("imagem", data.imagem);
+
+      await createAd(formCreate);
+      setShowModal(false);
+      localStorage.setItem("flashMessage", "Anúncio criado com sucesso e aguarda validação da administração.");
+      window.location.reload();
+    } catch (err) {
+      console.error("Erro ao criar anúncio:", err.response?.data || err.message);
+    }
+  };
+
+  return (
+    <>
+      {flashMessage && (
+        <div className="alert alert-success text-center mb-0" role="alert">
+          {flashMessage}
+        </div>
+      )}
+
+      <header className="header">
+        <div className="content-header d-flex justify-content-between align-items-center">
+          {/* Logo */}
+          <div className="logo d-flex justify-content-end">
+            <Link to="/">
+              <img src={Logo} alt="Logo" />
+            </Link>
+          </div>
+
+          {/* Botões de navegação */}
+          <nav className="buttons-info d-flex align-items-center justify-content-end">
+            <button type="button" className="btn">
+              <Link to="/anuncios" className="icon text-decoration-none text-dark">
+                <i className="bi bi-shop-window"></i>&nbsp; Explorar
+              </Link>
+            </button>
+            {userLoggedIn && (
+              <button type="button" className="btn">
+                <Link to="/chat" className="icon text-decoration-none text-dark">
+                  <i className="bi bi-chat"></i>&nbsp; Chat
+                </Link>
+              </button>
+            )}
+            {userLoggedIn && (
+              <button type="button" className="btn">
+                <Link
+                  to="/favoritos"
+                  className="icon text-decoration-none text-dark"
+                >
+                  <i className="bi bi-heart"></i>&nbsp; Favoritos
+                </Link>
+              </button>
+            )}
+
+            {userLoggedIn ? (
+              <button type="button" className="btn">
+                <Link
+                  to="/profile"
+                  className="icon text-decoration-none text-dark"
+                >
+                  <i className="bi bi-person"></i>&nbsp; A tua conta
+                </Link>
+              </button>
+            ) : (
+              <button type="button" className="btn">
+                <Link
+                  to="/login"
+                  className="icon text-decoration-none text-dark"
+                >
+                  <i className="bi bi-person"></i>&nbsp; Login
+                </Link>
+              </button>
+            )}
+            {isAdmin && (
+              <button type="button" className="btn">
+                <Link to="/dashboard" className="icon text-decoration-none text-dark">
+                  <i className="bi bi-speedometer2"></i>&nbsp; Administração
+                </Link>
+              </button>
+            )}
+            {userLoggedIn && (
+              <button
+                type="button"
+                className="btn color"
+                onClick={() => setShowModal(true)}
+              >
+                Anunciar e Vender
+              </button>
+            )}
+            {userLoggedIn && (
+              <button type="button" className="btn header-logout" onClick={handleLogout}>
+                <i className="bi bi-box-arrow-right" aria-hidden="true"></i>&nbsp; Sair
+              </button>
+            )}
+          </nav>
+        </div>
+      </header>
+
+      {/* Modal de criação de anúncio */}
+      <ItemModal
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+        handleSubmit={handleFormSubmit}
+        initialData={null}
+        categorias={categorias}
+      />
+
+      <style>
+        {`
+          .header .color {
+            background-color: #FF6B1A;
+            color: white;
+          }
+          .header .color:hover {
+            transform: scale(1.1);
+          }
+        `}
+      </style>
+    </>
+  );
+}
+
+export default Header;
+

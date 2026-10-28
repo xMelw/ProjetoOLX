@@ -1,0 +1,2 @@
+const router=require('express').Router();const asyncRoute=require('../utils/asyncRoute');const {authenticate}=require('../middleware/auth');const controller=require('../controllers/favorite.controller');
+router.get('/favoritos/:userId',authenticate,asyncRoute(controller.list));router.post('/favoritos',authenticate,asyncRoute(controller.add));router.delete('/favoritos',authenticate,asyncRoute(controller.remove));module.exports=router;

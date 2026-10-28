@@ -1,0 +1,2 @@
+const router=require('express').Router();const asyncRoute=require('../utils/asyncRoute');const {authenticate}=require('../middleware/auth');const {upload}=require('../middleware/upload');const controller=require('../controllers/user.controller');
+router.get('/utilizador/nome/:id',asyncRoute(controller.getName));router.get('/utilizador/:id',authenticate,asyncRoute(controller.getById));router.put('/utilizador/atualizar',authenticate,upload.single('imagem'),asyncRoute(controller.update));module.exports=router;

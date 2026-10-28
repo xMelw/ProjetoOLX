@@ -1,0 +1,5 @@
+const router=require('express').Router();const asyncRoute=require('../utils/asyncRoute');const {authenticate}=require('../middleware/auth');const {upload}=require('../middleware/upload');const controller=require('../controllers/ad.controller');
+router.get('/anuncios/destaque',asyncRoute(controller.featured));
+router.get('/anuncios/maisvistos/top12',asyncRoute((req,res)=>controller.mostViewed({...req,params:{...req.params,limit:12}},res)));
+router.get('/anuncios/maisvistos/top30',asyncRoute(controller.mostViewed));
+router.get('/anuncios/categoria/:id',asyncRoute(controller.byCategory));router.get('/anuncios/utilizador/:id',authenticate,asyncRoute(controller.byUser));router.get('/anuncios/:id',asyncRoute(controller.details));router.post('/anuncios/visualizar/:id',asyncRoute(controller.registerView));router.post('/anuncios/criar',authenticate,upload.single('imagem'),asyncRoute(controller.create));router.put('/anuncios/editar',authenticate,upload.single('imagem'),asyncRoute(controller.update));module.exports=router;

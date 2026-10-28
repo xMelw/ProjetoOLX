@@ -1,0 +1,7 @@
+const userModel=require('../models/user.model');
+const currentUserId=(req)=>Number(req.user?.id);
+const publicUser=(user)=>({ id:user.id,user_id:user.id,utilizador_id:user.id,nome:user.name,name:user.name,email:user.email,telemovel:user.phone,phone:user.phone,status:user.status,role:user.role,imagem:user.image||null,localizacao_id:user.location_id,localizacao:user.district||null,created_at:user.created_at });
+async function getName(req,res){const user=await userModel.findNameById(req.params.id);return user?res.json(user):res.status(404).json({message:'Utilizador não encontrado.'});}
+async function getById(req,res){if(currentUserId(req)!==Number(req.params.id)&&req.user.role!=='admin')return res.status(403).json({message:'Sem autorização.'});const user=await userModel.findProfileById(req.params.id);return user?res.json(publicUser(user)):res.status(404).json({message:'Utilizador não encontrado.'});}
+async function update(req,res){const id=Number(req.body.id||currentUserId(req));if(id!==currentUserId(req)&&req.user.role!=='admin')return res.status(403).json({message:'Sem autorização.'});const updated=await userModel.updateProfile(id,req.body,req.file?.filename);return updated?res.json({message:'Perfil atualizado.'}):res.status(404).json({message:'Utilizador não encontrado.'});}
+module.exports={getName,getById,update};
