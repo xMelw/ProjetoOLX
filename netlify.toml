@@ -11,7 +11,7 @@
 # Proxy para o backend no Render (tem de vir ANTES do redirect do SPA)
 [[redirects]]
   from = "/api/*"
-  to = "https://projeto-olx-backend.onrender.com:splat"
+  to = "https://projeto-olx-backend.onrender.com/api/:splat"
   status = 200
   force = true
 
