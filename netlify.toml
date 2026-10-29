@@ -3,7 +3,7 @@
   base = "Projecto_2S_Front_End"
 
   # Instala as dependências e faz o build
-  command = "npm install && npm run build"
+  command = "npm install && npx vite build"
 
   # Pasta de publicação gerada pelo Vite (relativa ao base)
   publish = "dist"
