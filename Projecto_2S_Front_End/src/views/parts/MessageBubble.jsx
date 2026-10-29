@@ -55,7 +55,7 @@ const Wrapper = styled.div`
   .msg-body {
     padding: 10px;
     border-radius: 8px;
-    background-color: ${({ $isOwn }) => ($isOwn ? "#D1E7DD" : "#F8D7DA")};
+    background-color: ${({ $isOwn }) => ($isOwn ? "#b6d8ff" : "#e4f1ff")};
     color: #000;
     word-wrap: break-word;
   }

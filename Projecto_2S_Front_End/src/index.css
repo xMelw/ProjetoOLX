@@ -1,8 +1,8 @@
-body, html{
+.body, html{
     margin: 0px;
     padding: 0px;
     scroll-behavior: smooth;
-    font-family: 'Montserrat', sans-serif!important;
+    height: 100vh;
 }
 
 /* ------ HEADER -----  */
@@ -123,7 +123,7 @@ body, html{
 
 /* ---- DESTAQUES ---- */
 
-.destaques-container{
+.destaques-container, .artigo{
     height: max-content;
     border-radius: 5px;
     padding: 25px;
@@ -131,6 +131,7 @@ body, html{
     background-color: whitesmoke;
     position: relative;
     overflow: visible;
+    
 }
 
 .div-destaques{

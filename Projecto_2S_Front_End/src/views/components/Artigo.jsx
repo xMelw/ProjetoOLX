@@ -49,7 +49,7 @@ function Artigo(props) {
         </div>
       )}
 
-      <div className="artigo d-flex flex-column align-items-center justify-content-center">
+      <div className="artigo d-flex flex-column align-items-center justify-content-center mt-0 pt-0">
         <div className="content-artigo d-flex flex-wrap">
           <div className="d-flex w-100 h-100 justify-content-between align-items-start gap-5">
             {/* Imagem */}
@@ -63,7 +63,7 @@ function Artigo(props) {
 
             {/* Detalhes */}
             <div className="artigo-details w-50 d-flex flex-column justify-content-between">
-              <div className="p-3 bg-white rounded">
+              <div className="p-3 rounded">
                 <h1 className="mb-5">{titulo}</h1>
                 <div className="d-flex justify-content-between">
                   <p className="mb-0">{nome_user}</p>

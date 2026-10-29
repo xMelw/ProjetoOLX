@@ -401,8 +401,12 @@ const Chat = () => {
 };
 
 const StyledWrapper = styled.div`
-  .Chat-container {
-    height: 700px;
+.Chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 850px;
     padding: 25px;
     background-color: rgba(255, 255, 255, 0.8);
   }

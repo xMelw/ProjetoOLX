@@ -23,10 +23,12 @@ const AnuncioDetalhe = () => {
   return (
     <>
       <Header />
-      <main className="container py-3">
-        <button type="button" className="btn btn-outline-secondary d-inline-flex align-items-center gap-2" onClick={goBack}>
+      <main className="destaques-container d-flex flex-column justify-content-left mb-0 mt-0 ml-0 p-0" style={{ backgroundColor: "transparent"}}>
+        <div className="content-artigo d-flex flex-wrap pl-0" style={{ marginLeft: "0"}}>
+          <button type="button" className="btn btn-outline-secondary d-inline-flex align-items-center" onClick={goBack}>
           <i className="bi bi-arrow-left" aria-hidden="true" /> Voltar aos anúncios
         </button>
+        </div>
       </main>
       <ArtigoContent {...ad} />
       <Relacionados artigos={relatedAds} h2Titulo="Relacionados" />
