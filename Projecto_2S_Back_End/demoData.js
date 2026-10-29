@@ -19,13 +19,13 @@ async function seedAdditionalDemoData({ get, run, hashPassword }) {
   }
 
   const demoAds = [
-    { title: 'Máquina de café automática', description: 'Máquina automática revista, com moinho integrado e manutenção em dia.', price: 185, category: 'Tecnologia', seller: 'sofia.demo@example.pt', status: 'active', featured: 1, views: 96 },
-    { title: 'Sofá de dois lugares', description: 'Sofá confortável em tecido cinzento. Recolha combinada no Porto.', price: 240, category: 'Casa e Jardim', seller: 'rui.demo@example.pt', status: 'active', featured: 1, views: 83 },
-    { title: 'Prancha de surf 7 pés', description: 'Prancha estável para iniciação, com leash e capa incluídos.', price: 160, category: 'Desporto', seller: 'rui.demo@example.pt', status: 'active', featured: 1, views: 71 },
-    { title: 'Comando sem fios para consola', description: 'Comando original testado e a funcionar. Pequenas marcas de uso.', price: 38, category: 'Tecnologia', seller: 'sofia.demo@example.pt', status: 'active', featured: 1, views: 64 },
-    { title: 'Candeeiro de mesa vintage', description: 'Candeeiro restaurado com base metálica e casquilho E27.', price: 42, category: 'Casa e Jardim', seller: 'sofia.demo@example.pt', status: 'pending', featured: 0, views: 7 },
-    { title: 'Impressora doméstica', description: 'Impressora usada, vendida com cabo de alimentação. Anúncio de exemplo vendido.', price: 25, category: 'Tecnologia', seller: 'rui.demo@example.pt', status: 'sold', featured: 0, views: 31 },
-    { title: 'Bonsai de interior', description: 'Bonsai decorativo em vaso. Anúncio de demonstração removido.', price: 28, category: 'Casa e Jardim', seller: 'sofia.demo@example.pt', status: 'removed', featured: 0, views: 12 }
+    { title: 'Máquina de café automática', description: 'Máquina automática revista, com moinho integrado e manutenção em dia.', price: 185, category: 'Tecnologia', seller: 'sofia.demo@example.pt', status: 'active', featured: 1, views: 96, image: 'coffee_machine.jpg' },
+    { title: 'Sofá de dois lugares', description: 'Sofá confortável em tecido cinzento. Recolha combinada no Porto.', price: 240, category: 'Casa e Jardim', seller: 'rui.demo@example.pt', status: 'active', featured: 1, views: 83, image: 'sofa.jpg' },
+    { title: 'Prancha de surf 7 pés', description: 'Prancha estável para iniciação, com leash e capa incluídos.', price: 160, category: 'Desporto', seller: 'rui.demo@example.pt', status: 'active', featured: 1, views: 71, image: 'surfboard.jpg' },
+    { title: 'Comando sem fios para consola', description: 'Comando original testado e a funcionar. Pequenas marcas de uso.', price: 38, category: 'Tecnologia', seller: 'sofia.demo@example.pt', status: 'active', featured: 1, views: 64, image: 'remote_control.jpg' },
+    { title: 'Candeeiro de mesa vintage', description: 'Candeeiro restaurado com base metálica e casquilho E27.', price: 42, category: 'Casa e Jardim', seller: 'sofia.demo@example.pt', status: 'pending', featured: 0, views: 7, image: 'vintage_lamp.jpg' },
+    { title: 'Impressora doméstica', description: 'Impressora usada, vendida com cabo de alimentação. Anúncio de exemplo vendido.', price: 25, category: 'Tecnologia', seller: 'rui.demo@example.pt', status: 'sold', featured: 0, views: 31, image: 'printer.jpg' },
+    { title: 'Bonsai de interior', description: 'Bonsai decorativo em vaso. Anúncio de demonstração removido.', price: 28, category: 'Casa e Jardim', seller: 'sofia.demo@example.pt', status: 'removed', featured: 0, views: 12, image: 'bonsai.jpg' }
   ];
 
   const adsByTitle = new Map();
@@ -38,7 +38,7 @@ async function seedAdditionalDemoData({ get, run, hashPassword }) {
     if (!ad) {
       ad = await run(
         'INSERT INTO ads(user_id,category_id,title,description,price,image,show_contact,featured,condition,status,views) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-        [seller.id, category.id, item.title, item.description, item.price, 'placeholder.png', 1, item.featured, 'Usado', item.status, item.views]
+        [seller.id, category.id, item.title, item.description, item.price, item.image, 1, item.featured, 'Usado', item.status, item.views]
       );
     }
     adsByTitle.set(item.title, { ...item, id: ad.id });
